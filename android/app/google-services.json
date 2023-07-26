@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "916543500329",
+    "project_id": "hindi-9fad0",
+    "storage_bucket": "hindi-9fad0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:916543500329:android:c1f13d99fa612d69c86c38",
+        "android_client_info": {
+          "package_name": "com.example.hindi_tutorial"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDbyAGNG9IFrK4noDEIiyXzyWc5gWS-MM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
