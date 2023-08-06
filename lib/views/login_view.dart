@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 //import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-
+import 'package:hindi_tutorial/main.dart';
 import '../firebase_options.dart';
 
 
@@ -90,6 +90,8 @@ class _LoginViewState extends State<LoginView> {
     },
     child: const Text('Login'),
     ),
+    TextButton(onPressed: () {Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const VerifyEmail() ));
+    }, child: Text("Go"))
     ],
     );
     }
