@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 //import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:hindi_tutorial/views/Verify_email_view.dart';
 import 'package:hindi_tutorial/main.dart';
 import '../firebase_options.dart';
 
