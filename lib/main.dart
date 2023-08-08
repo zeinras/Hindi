@@ -9,7 +9,7 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+ //await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey),
         useMaterial3: true,
       ),
-      home: const Homepage(),
+      home: const RegisterView(),
     );
   }
 }
@@ -53,10 +53,21 @@ class _HomepageState extends State<Homepage> {
               case ConnectionState.waiting:
                 break;
               case ConnectionState.active:
+                return Center(
+                  child: CircularProgressIndicator(), // Show a loading indicator
+                );
                 break;
               case ConnectionState.done:
                   //  print("YOU MUST VERIFY FIRST");
-                     Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const VerifyEmail() ));
+
+              Future.delayed(Duration.zero, () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) => const VerifyEmail()));
+              });
+
+              //   Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const VerifyEmail() ));
+
                      return Text("Done");
 
           }
@@ -87,8 +98,9 @@ class _VerifyEmailState extends State<VerifyEmail> {
           children: [
             Text("please verify your email address"),
             TextButton(onPressed:() async {
+              await Firebase.initializeApp();
               final user = FirebaseAuth.instance.currentUser;
-              print(user);
+              print("HEEEYYYYYYYYYYYYYYYYYYYYYY  + $user");
              await user?.sendEmailVerification();
 
             } , child: Text("send email"))
