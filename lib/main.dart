@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:hindi_tutorial/views/login_view.dart';
-import 'package:hindi_tutorial/views/register_view.dart';
+//import 'package:hindi_tutorial/views/register_view.dart';
 import 'package:hindi_tutorial/views/Verify_email_view.dart';
-import 'firebase_options.dart';
+//import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey),
         useMaterial3: true,
       ),
-      home: const RegisterView(),
+      home: const Homepage(),
     );
   }
 }
@@ -35,53 +35,84 @@ class Homepage extends StatefulWidget {
   @override
   State<Homepage> createState() => _HomepageState();
 }
-
 class _HomepageState extends State<Homepage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            backgroundColor: Colors.blueAccent,
-            title: const Text('Home')),
-        body:
-        FutureBuilder(
-          future: Firebase.initializeApp(),
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-                break;
-              case ConnectionState.waiting:
-                break;
-              case ConnectionState.active:
+      /*appBar: AppBar(
+        backgroundColor: Colors.blueAccent,
+        title: const Text('Home'),
+      ),*/
+      body: FutureBuilder(
+        future: Firebase.initializeApp()
+        ,
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              break;
+            case ConnectionState.waiting:
+              return  Center(
+                child:  CircularProgressIndicator(),
+              );
+            case ConnectionState.active:
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            case ConnectionState.done:
+              /*if (snapshot.hasError) {
+                // Handle the error if initialization fails
                 return Center(
-                  child: CircularProgressIndicator(), // Show a loading indicator
+                  child: Text('Error initializing Firebase'),
                 );
-                break;
-              case ConnectionState.done:
-                  //  print("YOU MUST VERIFY FIRST");
+              }*/
+              final user = FirebaseAuth.instance.currentUser;
+              if (user==null)
+                {
+                  return LoginView();
+                }
+              else
+                { if (user.emailVerified)
+                  {return NotesView();}
 
-              Future.delayed(Duration.zero, () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (context) => const VerifyEmail()));
-              });
+                  else
+                  {return VerifyEmail();}}
 
-              //   Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const VerifyEmail() ));
 
-                     return Text("Done");
+               /* Future.delayed(Duration.zero, () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const RegisterView()),
+                  );
+                });*/
 
+              return Text("Done");
           }
-            return Text("Done"); }
-        )
-
-
-
+          return Text("Done");
+        },
+      ),
     );
   }
 }
 
 
+
+class NotesView extends StatefulWidget {
+  const NotesView({Key? key}) : super(key: key);
+
+  @override
+  State<NotesView> createState() => _NotesViewState();
+}
+
+class _NotesViewState extends State<NotesView> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Notes!!") ,
+      backgroundColor: Colors.blueAccent,),
+      body: Center(child: Text( "Hey!!!!"))
+
+    );
+  }
+}
 
 
 
