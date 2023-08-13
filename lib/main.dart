@@ -42,6 +42,13 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const NotesView(),
+      routes:
+      {'/login/':(context)=> const LoginView(),
+        '/register/':(context)=> const RegisterView(),
+        '/verify/': (context)=> const VerifyEmail(),
+        '/notes/': (context)=> const NotesView(),
+
+      },
     );
   }
 }

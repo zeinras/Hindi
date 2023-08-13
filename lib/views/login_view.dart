@@ -1,3 +1,5 @@
+//import 'dart:math';
+
 import 'package:flutter/material.dart';
 //import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -5,6 +7,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:hindi_tutorial/views/Verify_email_view.dart';
 import 'package:hindi_tutorial/main.dart';
 import '../firebase_options.dart';
+import 'dart:developer' show log;
+
 
 
 
@@ -82,16 +86,19 @@ class _LoginViewState extends State<LoginView> {
     );
     print(userCredential);}
     on FirebaseAuthException catch (c)
-    {if (c.code=='user-not-found')
-      print("user not found");
-      print (c.code);
+    { if (c.code == 'user-not-found') {
+      log("user not found");
+      log("hey");
+      log(c.code.toString());
+    }
     }
 
 
     },
     child: const Text('Login'),
     ),
-    TextButton(onPressed: () {Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const VerifyEmail() ));
+    TextButton(onPressed: () {Navigator.of(context).pushNamedAndRemoveUntil('/verify/', (route) => false);
+
     }, child: Text("Go"))
     ],
     );

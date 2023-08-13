@@ -5,7 +5,7 @@ import 'package:hindi_tutorial/views/login_view.dart';
 import 'package:hindi_tutorial/views/register_view.dart';
 import 'package:hindi_tutorial/main.dart';
 import '../firebase_options.dart';
-
+import 'dart:developer' show log;
 
 
 class VerifyEmail extends StatefulWidget {
@@ -29,7 +29,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
         TextButton(onPressed:() async {
           await Firebase.initializeApp();
           final user = FirebaseAuth.instance.currentUser;
-          print("HEEEYYYYYYYYYYYYYYYYYYYYYY  + $user");
+          log("HEEEYYYYYYYYYYYYYYYYYYYYYY"  + user.toString());
           await user?.sendEmailVerification();
 
         } , child: Text("send email verf")),
