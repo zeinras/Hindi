@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:hindi_tutorial/constants/routes.dart';
 import 'package:hindi_tutorial/views/Verify_email_view.dart';
 import 'package:hindi_tutorial/main.dart';
+import 'package:hindi_tutorial/utilities/show-dialog.dart';
 
 import '../firebase_options.dart';
 import 'dart:developer' show log;
@@ -93,11 +94,13 @@ class _LoginViewState extends State<LoginView> {
     on FirebaseAuthException catch (c)
     { if (c.code == 'user-not-found') {
       log("user not found");
-      log("hey");
-      log(c.code.toString());
-    }
-    }
+      log(c.code.toString());}
+      await AlertsDialog(context,c.code);
 
+    }
+    catch(l){
+      await AlertsDialog(context,l);
+    }
 
     },
     child: const Text('Login'),
@@ -125,4 +128,24 @@ class _LoginViewState extends State<LoginView> {
 
     );
   }
+}
+
+
+Future<bool> AlertsDialog(BuildContext context,ss) {
+  return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Alllert"),
+          content: Text(ss.toString()),
+          actions: [
+
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("OK"))
+          ],
+        );
+      }).then((value) => value ?? false);
 }

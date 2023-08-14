@@ -10,6 +10,7 @@ import 'dart:developer' show log;
 import 'package:hindi_tutorial/views/register_view.dart';
 import 'package:hindi_tutorial/views/Verify_email_view.dart';
 //import 'firebase_options.dart';
+import 'package:hindi_tutorial/utilities/show-dialog.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -139,9 +140,9 @@ class _NotesViewState extends State<NotesView> {
                 final should = await showLogOutDialog(context);
 
                 if (should) {
-                  //Firebase.initializeApp().then((value) => {
+
                   await FirebaseAuth.instance.signOut();
-                  //});
+
 
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => const LoginView()));
@@ -174,27 +175,4 @@ class _NotesViewState extends State<NotesView> {
       ),
     );
   }
-}
-
-Future<bool> showLogOutDialog(BuildContext context) {
-  return showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Alllert"),
-          content: Text("Sign out??"),
-          actions: [
-            TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                },
-                child: Text("Yes")),
-            TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(false);
-                },
-                child: Text("No"))
-          ],
-        );
-      }).then((value) => value ?? false);
 }
