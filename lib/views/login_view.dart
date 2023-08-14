@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 //import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:hindi_tutorial/constants/routes.dart';
 import 'package:hindi_tutorial/views/Verify_email_view.dart';
 import 'package:hindi_tutorial/main.dart';
+
 import '../firebase_options.dart';
 import 'dart:developer' show log;
 
@@ -83,8 +85,11 @@ class _LoginViewState extends State<LoginView> {
     final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
     email: e,
     password: p,
-    );
-    print(userCredential);}
+    ).then((value) => {Navigator.of(context).pushNamedAndRemoveUntil(notesRoute, (route) => false)});
+    log(userCredential.toString());
+
+    //Navigator.of(context).pushNamedAndRemoveUntil('/notes/', (route) => false);
+    }
     on FirebaseAuthException catch (c)
     { if (c.code == 'user-not-found') {
       log("user not found");
@@ -97,14 +102,22 @@ class _LoginViewState extends State<LoginView> {
     },
     child: const Text('Login'),
     ),
-    TextButton(onPressed: () {Navigator.of(context).pushNamedAndRemoveUntil('/verify/', (route) => false);
+    TextButton(onPressed: () {
+      Navigator.of(context).pushNamedAndRemoveUntil(verifyRoute, (route) => false);
 
-    }, child: Text("Go"))
+    }, child: const Text("Go"))
     ],
     );
+
+
+
     }
 
     return const Text("Loading...");
+
+
+
+
     },
     )
 

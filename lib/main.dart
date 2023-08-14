@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:hindi_tutorial/views/login_view.dart';
+import 'package:hindi_tutorial/constants/routes.dart';
 import 'dart:developer' show log;
 
 import 'package:hindi_tutorial/views/register_view.dart';
@@ -12,19 +13,18 @@ import 'package:hindi_tutorial/views/Verify_email_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
 
-  // Initialize another Firebase instance with a custom name (e.g., "secondaryInstance")
+  // Initialize the named instance first
   await Firebase.initializeApp(
     name: 'secondaryInstance',
     options: FirebaseOptions(
-      appId: '1:916543500329:android:c1f13d99fa612d69c86c38',
-      apiKey: 'AIzaSyCDbyAGNG9IFrK4noDEIiyXzyWc5gWS-MM',
-      projectId: 'hindi-9fad0',
-      messagingSenderId: '916543500329'
-    ),
+        appId: '1:916543500329:android:c1f13d99fa612d69c86c38',
+        apiKey: 'AIzaSyCDbyAGNG9IFrK4noDEIiyXzyWc5gWS-MM',
+        projectId: 'hindi-9fad0',
+        messagingSenderId: '916543500329'),
   );
 
+   await Firebase.initializeApp();
 
 
   runApp(const MyApp());
@@ -41,13 +41,12 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey),
         useMaterial3: true,
       ),
-      home: const NotesView(),
-      routes:
-      {'/login/':(context)=> const LoginView(),
-        '/register/':(context)=> const RegisterView(),
-        '/verify/': (context)=> const VerifyEmail(),
-        '/notes/': (context)=> const NotesView(),
-
+      home: const Homepage(),
+      routes: {
+        loginRoute: (context) => const LoginView(),
+        registerRoute: (context) => const RegisterView(),
+        verifyRoute: (context) => const VerifyEmail(),
+        notesRoute: (context) => const NotesView(),
       },
     );
   }
@@ -69,7 +68,7 @@ class _HomepageState extends State<Homepage> {
         title: const Text('Home'),
       ),*/
       body: FutureBuilder(
-        future: Firebase.initializeApp(name: 'secondaryInstance'),
+        future: Firebase.initializeApp(name:'secondaryInstance'),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
@@ -83,15 +82,15 @@ class _HomepageState extends State<Homepage> {
                 child: CircularProgressIndicator(),
               );
             case ConnectionState.done:
-
-              if (snapshot.hasError) {
+              /*if (snapshot.hasError) {
                 // Handle the error if initialization fails
                 return Center(
                   child: Text('Error initializing Firebase'),
                 );
-              }
+              }*/
 
               final user = FirebaseAuth.instance.currentUser;
+              log(user.toString());
               if (user == null) {
                 return LoginView();
               } else {
@@ -108,15 +107,10 @@ class _HomepageState extends State<Homepage> {
                   );
                 });*/
 
-              return Text("Done");
+              //return Text("Done");
           }
           return Text("Done");
         },
-
-
-
-
-
       ),
     );
   }
@@ -135,59 +129,54 @@ class _NotesViewState extends State<NotesView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Notes!!"),
-          backgroundColor: Colors.blueAccent,
-          actions: [
-            PopupMenuButton<MenuAction>(onSelected: (value) async {
-              switch (value){
-                case MenuAction.logout:
-              final should = await showLogOutDialog(context);
+      appBar: AppBar(
+        title: Text("Notes!!"),
+        backgroundColor: Colors.blueAccent,
+        actions: [
+          PopupMenuButton<MenuAction>(onSelected: (value) async {
+            switch (value) {
+              case MenuAction.logout:
+                final should = await showLogOutDialog(context);
 
-              if (should) {
-                //Firebase.initializeApp().then((value) => {
+                if (should) {
+                  //Firebase.initializeApp().then((value) => {
                   await FirebaseAuth.instance.signOut();
-                //});
+                  //});
 
-              Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const LoginView()));
-              }
-              break;
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const LoginView()));
                 }
+                break;
+            }
 
-
-              //log(should.toString());
-              /*if (should){
+            //log(should.toString());
+            /*if (should){
                // await Firebase.initializeApp();
                await FirebaseAuth.instance.signOut();
                Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => const LoginView()));
               }*/
-
-
-
-              }
-            , itemBuilder: (context) {
-              return [
-                const PopupMenuItem<MenuAction>(
-                    value: MenuAction.logout, child: Text("Logout"))
-              ];
-            })
-          ],
-        ),
-        body:
-    Center(
-      child: TextButton(
-      onPressed: () {Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => const LoginView()));
-      }, child: Text("Login")),
-    ),
-
-        );
+          }, itemBuilder: (context) {
+            return [
+              const PopupMenuItem<MenuAction>(
+                  value: MenuAction.logout, child: Text("Logout"))
+            ];
+          })
+        ],
+      ),
+      body: Center(
+        child: TextButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const LoginView()));
+            },
+            child: Text("Login")),
+      ),
+    );
   }
 }
 
-Future<bool> showLogOutDialog(BuildContext context)  {
+Future<bool> showLogOutDialog(BuildContext context) {
   return showDialog<bool>(
       context: context,
       builder: (context) {
