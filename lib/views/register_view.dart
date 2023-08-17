@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:hindi_tutorial/constants/routes.dart';
+import 'package:hindi_tutorial/views/Verify_email_view.dart';
 import 'package:hindi_tutorial/views/login_view.dart';
 import '../firebase_options.dart';
 import 'dart:developer' show log;
@@ -17,12 +19,14 @@ class RegisterView extends StatefulWidget {
 class _RegisterViewState extends State<RegisterView> {
   late final TextEditingController Email;
   late final TextEditingController Pass ;
+  late final p;
+  String tt = "Register";
+  bool vis=false;
 
   @override
   void initState() {
     Email = TextEditingController();
     Pass = TextEditingController();
-
     super.initState();
   }
 
@@ -67,16 +71,35 @@ class _RegisterViewState extends State<RegisterView> {
                       //);
                       final e=Email.text;
                       final p=Pass.text;
+
                       final userCredential =await FirebaseAuth.instance.createUserWithEmailAndPassword(email: e, password: p);
-                    },child: const Text("Register")
+                      final user = FirebaseAuth.instance.currentUser;
+                      await user?.sendEmailVerification().then((value) => {Navigator.of(context).pushNamedAndRemoveUntil(verifyRoute, (route) => false)});
+                      log(user.toString());
+                      setState(() {
+                        tt = "no verification?";
+                      });
+                      
+                      vis=true;
+                    },child:  Text(tt)
 
 
                     ),
                   TextButton(onPressed: () { Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const LoginView() ));
-                  }, child: Text("LOGIN"))
+                  }, child: Text("LOGIN")),
+                    Visibility(
+                       visible:vis ,
+                        child: TextButton(onPressed: () async{
+                          Navigator.of(context).pushNamedAndRemoveUntil(verifyRoute, (route) => false);
+                        }, child: Text("Verify now"))),
+            TextButton(onPressed: () async{
+              final user1 = FirebaseAuth.instance.currentUser;
+              log(user1.toString());
+            }, child: Text("user?"))
+
                   ],
                 );
-                break;
+
               default:
                 return const Text("Loading");
 

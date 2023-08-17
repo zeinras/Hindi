@@ -25,7 +25,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
         ,body:
     Column(
       children: [
-        Text("please verify your email address"),
+        Center(child: Text(" We've sent you a verification email \n please verify your email address")),
         TextButton(onPressed:() async {
           await Firebase.initializeApp();
           final user = FirebaseAuth.instance.currentUser;
@@ -34,9 +34,11 @@ class _VerifyEmailState extends State<VerifyEmail> {
 
         } , child: Text("send email verf")),
         TextButton(onPressed:() async {
+          await FirebaseAuth.instance.signOut();
+
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const NotesView()));
-        } , child: Text("go to notes"))
+              builder: (context) => const LoginView()));
+        } , child: Text("just verified"))
       ],
     )
 
