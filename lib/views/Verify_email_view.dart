@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:hindi_tutorial/services/auth/auth_service.dart';
 import 'package:hindi_tutorial/views/login_view.dart';
 import 'package:hindi_tutorial/views/register_view.dart';
 import 'package:hindi_tutorial/main.dart';
@@ -27,14 +26,14 @@ class _VerifyEmailState extends State<VerifyEmail> {
       children: [
         Center(child: Text(" We've sent you a verification email \n please verify your email address")),
         TextButton(onPressed:() async {
-          await Firebase.initializeApp();
-          final user = FirebaseAuth.instance.currentUser;
+          await AuthServices.firebase().intialize();
+          final user = AuthServices.firebase().currentUser;
           log("HEEEYYYYYYYYYYYYYYYYYYYYYY"  + user.toString());
-          await user?.sendEmailVerification();
+          await AuthServices.firebase().sendEmailVerification();
 
         } , child: Text("send email verf")),
         TextButton(onPressed:() async {
-          await FirebaseAuth.instance.signOut();
+          await AuthServices.firebase().logOut();
 
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => const LoginView()));

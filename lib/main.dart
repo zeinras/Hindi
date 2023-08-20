@@ -1,20 +1,20 @@
 //import 'dart:html';
 
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:hindi_tutorial/services/auth/auth_service.dart';
 import 'package:hindi_tutorial/views/login_view.dart';
 import 'package:hindi_tutorial/constants/routes.dart';
 import 'dart:developer' show log;
 
 import 'package:hindi_tutorial/views/register_view.dart';
 import 'package:hindi_tutorial/views/Verify_email_view.dart';
+import 'package:hindi_tutorial/views/notes_view.dart';
 //import 'firebase_options.dart';
 import 'package:hindi_tutorial/utilities/show-dialog.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+/*
   // Initialize the named instance first
   await Firebase.initializeApp(
     name: 'secondaryInstance',
@@ -26,7 +26,7 @@ void main() async {
   );
 
    await Firebase.initializeApp();
-
+*/
 
   runApp(const MyApp());
 }
@@ -69,7 +69,7 @@ class _HomepageState extends State<Homepage> {
         title: const Text('Home'),
       ),*/
       body: FutureBuilder(
-        future: Firebase.initializeApp(name:'secondaryInstance'),
+        future:AuthServices.firebase().intialize(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
@@ -90,12 +90,12 @@ class _HomepageState extends State<Homepage> {
                 );
               }*/
 
-              final user = FirebaseAuth.instance.currentUser;
+              final user = AuthServices.firebase().currentUser;
               log(user.toString());
               if (user == null) {
                 return LoginView();
               } else {
-                if (user.emailVerified) {
+                if (user.isEmailVerified) {
                   return NotesView();
                 } else {
                   return VerifyEmail();
@@ -117,62 +117,4 @@ class _HomepageState extends State<Homepage> {
   }
 }
 
-enum MenuAction { logout }
 
-class NotesView extends StatefulWidget {
-  const NotesView({Key? key}) : super(key: key);
-
-  @override
-  State<NotesView> createState() => _NotesViewState();
-}
-
-class _NotesViewState extends State<NotesView> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Notes!!"),
-        backgroundColor: Colors.blueAccent,
-        actions: [
-          PopupMenuButton<MenuAction>(onSelected: (value) async {
-            switch (value) {
-              case MenuAction.logout:
-                final should = await showLogOutDialog(context);
-
-                if (should) {
-
-                  await FirebaseAuth.instance.signOut();
-
-
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const LoginView()));
-                }
-                break;
-            }
-
-            //log(should.toString());
-            /*if (should){
-               // await Firebase.initializeApp();
-               await FirebaseAuth.instance.signOut();
-               Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const LoginView()));
-              }*/
-          }, itemBuilder: (context) {
-            return [
-              const PopupMenuItem<MenuAction>(
-                  value: MenuAction.logout, child: Text("Logout"))
-            ];
-          })
-        ],
-      ),
-      body: Center(
-        child: TextButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const LoginView()));
-            },
-            child: Text("Login")),
-      ),
-    );
-  }
-}

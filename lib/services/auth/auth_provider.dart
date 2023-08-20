@@ -1,6 +1,7 @@
 import 'package:hindi_tutorial/services/auth/auth_user.dart';
- abstract class AuthProvider {
 
+ abstract class AuthProvider {
+Future<void> intialize();
  // el variable esmo auth user , el method yalli hiye getter esma current user kl ma 7da ystad3i el
    // abstract class auth provider lazem y3abbi kime bi function current user yalli 7a t3ti kime la authuser
 AuthUser? get currentUser;

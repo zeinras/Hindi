@@ -2,16 +2,15 @@
 
 import 'package:flutter/material.dart';
 
-//import 'firebase_options.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:hindi_tutorial/constants/routes.dart';
+import 'package:hindi_tutorial/services/auth/auth_service.dart';
 import 'package:hindi_tutorial/views/Verify_email_view.dart';
 import 'package:hindi_tutorial/main.dart';
 import 'package:hindi_tutorial/utilities/show-dialog.dart';
 
-import '../firebase_options.dart';
 import 'dart:developer' show log;
+
+import '../services/auth/auth_exceptions.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -46,7 +45,7 @@ class _LoginViewState extends State<LoginView> {
         title: const Text('Login'),
       ),
       body: FutureBuilder(
-        future: Firebase.initializeApp(),
+        future: AuthServices.firebase().intialize(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
@@ -75,29 +74,29 @@ class _LoginViewState extends State<LoginView> {
                       final p = pass.text;
                       try {
                         final userCredential =
-                        await FirebaseAuth.instance.signInWithEmailAndPassword(
-                          email: e,
-                          password: p,
-                        );
-                        final user = FirebaseAuth.instance.currentUser;
-                        if (user != null) {
-                          if (user.emailVerified) {
+                        await AuthServices.firebase().logIn(email: e, pass: p);
+                        final user = AuthServices.firebase().currentUser;
+
+                          if (user?.isEmailVerified??false) {
                             Navigator.of(context).pushNamedAndRemoveUntil(
                                 notesRoute, (route) => false);
                           } else {
                             AlertsDialog(context, "Email not verified");
                           }
-                        }
-                      } on FirebaseAuthException catch (c) {
-                        if (c.code == 'user-not-found') {
-                          AlertsDialog(context, "User not found");
-                        } else {
-                          AlertsDialog(context, c.code);
-                        }
-                      } catch (l) {
-                        AlertsDialog(context, l.toString());
+
                       }
-                    },
+                      on UserNotFoundAuthException catch(e){
+                        AlertsDialog(context, "User not found");
+                      }
+                      on WrongPasswordAuthException catch(e){
+                        AlertsDialog(context, "Wrong Password");
+                      }
+
+                      on GenericAuthException catch(e)
+                      {
+                        AlertsDialog(context, "Authentication Error");
+                      }
+                   },
                     child: const Text('Login'),
                   ),
                   TextButton(
