@@ -1,3 +1,5 @@
+
+
 import'package:firebase_auth/firebase_auth.dart' show User;
 import 'package:flutter/cupertino.dart';
 
@@ -7,10 +9,11 @@ import 'package:flutter/cupertino.dart';
 @immutable
 class AuthUser {
 final bool isEmailVerified;
-// had constructer
-  const AuthUser(this.isEmailVerified);
+// had constructer  required ya3ni lazem lamma tstad3i t7addedi el variable la yfhamo sho 3m ymar2o
+  const AuthUser({required this.isEmailVerified});
 //had howe function tanye bs byesta3mel el constructer
-  factory AuthUser.fromFirebase(User user)=> AuthUser(user.emailVerified);
-
+  factory AuthUser.fromFirebase(User user)=>
+      AuthUser(isEmailVerified: user.emailVerified);
 
 }
+
